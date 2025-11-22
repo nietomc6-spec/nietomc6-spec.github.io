@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Pink Club – Face Shape Analyzer</title>
+
+  <!-- Fuente cute -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --pink-main: #ff7bbf;
+      --pink-soft: #ffe4f2;
+      --pink-dark: #d94b93;
+      --bg: #fff9fd;
+      --text-main: #2b1740;
+      --card-bg: #ffffff;
+      --shadow-soft: 0 18px 38px rgba(0,0,0,0.06);
+      --radius-xl: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffeaf5, #fff9fd);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1100px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 28px;
+      box-shadow: var(--shadow-soft);
+      padding: 28px 28px 40px;
+      backdrop-filter: blur(12px);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .logo {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .logo-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .logo-tagline {
+      font-size: 13px;
+      color: #7c5a88;
+    }
+
+    .tag-pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: linear-gradient(135deg, #ffd1ec, #ffc4df);
+      color: #8a325f;
+      font-weight: 500;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 840px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius-xl);
+      padding: 20px 18px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.03);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title span.icon {
+      font-size: 18px;
+    }
+
+    .upload-area {
+      border: 1px dashed #ffb4d6;
+      border-radius: 22px;
+      padding: 18px;
+      text-align: center;
+      background: #fff7fb;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .upload-area input[type="file"] {
+      display: none;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--pink-main), var(--pink-dark));
+      color: white;
+      box-shadow: 0 10px 22px rgba(255, 123, 191, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(255, 123, 191, 0.45);
+    }
+
+    .btn-soft {
+      background: #ffe6f4;
+      color: var(--pink-dark);
+    }
+
+    .face-preview-wrapper {
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .face-preview {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: #ffe2f2;
+      overflow: hidden;
+      border: 3px solid #ffc4e4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    }
+
+    .face-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .helper-text {
+      font-size: 11px;
+      color: #866987;
+    }
+
+    .field-group {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #7a547c;
+    }
+
+    select {
+      border-radius: 999px;
+      border: 1px solid #ffd0ea;
+      padding: 7px 11px;
+      font-size: 13px;
+      outline: none;
+      background: #fff;
+    }
+
+    .result-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      background: #ffe3f0;
+      color: #9a2f65;
+      margin-top: 4px;
+    }
+
+    .result-chip strong {
+      letter-spacing: 0.5px;
+    }
+
+    .section {
+      margin-top: 10px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .section-text {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #5a3f66;
+    }
+
+    ul.tips {
+      list-style: none;
+      margin-top: 6px;
+      font-size: 12px;
+      color: #5a3f66;
+    }
+
+    ul.tips li::before {
+      content: "✦";
+      color: var(--pink-dark);
+      margin-right: 6px;
+    }
+
+    .video-wrapper {
+      margin-top: 10px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+    }
+
+    .video-wrapper iframe {
+      width: 100%;
+      height: 220px;
+      border: none;
+    }
+
+    .image-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .image-row img {
+      width: 30%;
+      min-width: 90px;
+      border-radius: 16px;
+      object-fit: cover;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+    }
+
+    .badge-tech {
+      font-size: 11px;
+      background: #f4e7ff;
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: #5b3c96;
+      margin-bottom: 4px;
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1.2fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .tech-item {
+      font-size: 11px;
+      background: #faf4ff;
+      border-radius: 14px;
+      padding: 8px 10px;
+      color: #5a3f66;
+    }
+
+    footer {
+      margin-top: 22px;
+      font-size: 11px;
+      color: #8b6a98;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <div class="logo">
+      <div class="logo-title">The Pink Club</div>
+      <div class="logo-tagline">IA + visagismo para ayudarte a amar tu cara 💋</div>
+    </div>
+    <div class="tag-pill">
+      Face Shape Analyzer · Demo académico
+    </div>
+  </header>
+
+  <main>
+    <!-- Lado izquierdo: subir foto -->
+    <section class="card">
+      <div class="card-title">
+        <span class="icon">📸</span> Sube tu selfie
+      </div>
+      <div class="upload-area">
+        <p style="font-size:13px; margin-bottom:4px;">
+          Sube una foto de tu rostro (frontal, con buena luz).
+        </p>
+        <label for="file-input" class="btn btn-soft">
+          Elegir foto
+        </label>
+        <input id="file-input" type="file" accept="image/*">
+
+        <p class="helper-text">
+          En el prototipo real, aquí se usaría tu modelo de IA (dlib + XGBoost) para analizar
+          landmarks y proporciones faciales.
+        </p>
+
+        <div class="face-preview-wrapper">
+          <div class="face-preview" id="face-preview">
+            <span style="font-size:11px; color:#b1809d;">Tu foto aparecerá aquí 💗</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="face-shape-select">Resultado de forma de rostro (demo)</label>
+          <select id="face-shape-select">
+            <option value="Square">Square (Cuadrado)</option>
+            <option value="Oval">Oval (Ovalado)</option>
+            <option value="Round">Round (Redondo)</option>
+            <option value="Heart">Heart (Corazón)</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" id="analyze-btn">
+          Analizar y ver recomendaciones
+        </button>
+      </div>
+    </section>
+
+    <!-- Lado derecho: resultados -->
+    <section class="card">
+      <div class="card-title">
+        <span class="icon">✨</span> Tu análisis de rostro
+      </div>
+
+      <div id="result-basic" class="section">
+        <div class="section-title">Forma detectada</div>
+        <div class="result-chip" id="shape-chip">
+          <span>💗</span> <span id="shape-name"><strong>Square</strong> · rostro cuadrado</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">¿Por qué esta forma?</div>
+        <p class="section-text" id="shape-explanation">
+          La anchura de tu frente, tus pómulos y tu mandíbula es muy similar y la línea de la
+          mandíbula se ve bastante recta. Por eso tu rostro se clasifica como <b>Square</b>.
+        </p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Tips de maquillaje para ti</div>
+        <ul class="tips" id="tips-list">
+          <!-- se llena desde JS -->
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Ideas de looks (ejemplos)</div>
+        <div class="image-row" id="images-row">
+          <!-- se llena desde JS con URLs (ej. Pinterest) -->
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Video recomendado</div>
+        <div class="video-wrapper">
+          <iframe id="yt-frame"
+                  src="https://www.youtube.com/embed/xm_A7KeqBM0"
+                  title="Maquillaje según forma de rostro"
+                  allowfullscreen></iframe>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Explicación de la IA -->
+  <section class="card" style="margin-top:22px;">
+    <div class="card-title">
+      <span class="icon">🧠</span> ¿Qué hace la IA de The Pink Club detrás de escena?
+    </div>
+    <span class="badge-tech">dlib · 68 landmarks · medidas geométricas · XGBoost</span>
+
+    <div class="tech-grid">
+      <div class="tech-item">
+        <b>1. Detectamos tu rostro y landmarks</b><br>
+        Usamos <code>dlib</code> para localizar 68 puntos clave (cejas, ojos, nariz, boca, contorno
+        de la mandíbula). Con esos puntos calculamos distancias y ángulos.
+      </div>
+      <div class="tech-item">
+        <b>2. Calculamos proporciones</b><br>
+        Medimos ancho de frente, pómulos y mandíbula, largo del rostro y curvatura mandibular.
+        A partir de esas relaciones, construimos un vector de características.
+      </div>
+      <div class="tech-item">
+        <b>3. Clasificación con Machine Learning</b><br>
+        Ese vector entra a un modelo entrenado (SVM/XGBoost) con un dataset rotulado en
+        <i>Oval, Round, Square, Heart</i>. El modelo aprende patrones geométricos de cada tipo.
+      </div>
+      <div class="tech-item">
+        <b>4. Traducción a tips de belleza</b><br>
+        Según tu tipo de rostro, mostramos explicaciones en lenguaje sencillo y sugerencias de
+        maquillaje (contorno, rubor, ojos, labios) alineadas con el visagismo.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    The Pink Club · Prototipo académico de Cami · Hecho con mucho blush y un poco de IA 💄✨
+  </footer>
+</div>
+
+<script>
+  // Datos para cada tipo de rostro
+  const FACE_DATA = {
+    "Square": {
+      label: "Square · rostro cuadrado",
+      explanation:
+        "La anchura de tu frente, tus pómulos y tu mandíbula es muy similar y la línea de la mandíbula " +
+        "se ve bastante recta. Por eso tu rostro se clasifica como Square: fuerte, definido y armónico.",
+      tips: [
+        "Suaviza las líneas rectas aplicando contorno en laterales de frente y mandíbula.",
+        "Coloca el rubor en forma de 'C' desde las mejillas hacia las sienes para estilizar.",
+        "Prefiere labios con contorno suave (no muy anguloso) y sombras ligeramente ascendentes."
+      ],
+      videoId: "xm_A7KeqBM0", // reemplaza con tu video favorito
+      images: [
+        "https://images.pexels.com/photos/3760852/pexels-photo-3760852.jpeg",
+        "https://images.pexels.com/photos/3760855/pexels-photo-3760855.jpeg",
+        "https://images.pexels.com/photos/3738344/pexels-photo-3738344.jpeg"
+      ]
+    },
+    "Oval": {
+      label: "Oval · rostro ovalado",
+      explanation:
+        "Tu rostro es un poco más largo que ancho, con frente ligeramente más ancha que la mandíbula " +
+        "y líneas muy suaves. Por eso se considera Oval: es una forma muy equilibrada y versátil.",
+      tips: [
+        "Aplica contorno suave solo para enfatizar pómulos, sin cambiar demasiado la forma.",
+        "Juega con casi cualquier estilo de rubor: en diagonal o ligeramente redondeado.",
+        "Puedes experimentar con delineados gráficos o sombras intensas: el óvalo los soporta muy bien."
+      ],
+      videoId: "EQC5Evhcz1E",
+      images: [
+        "https://images.pexels.com/photos/3760853/pexels-photo-3760853.jpeg",
+        "https://images.pexels.com/photos/3760871/pexels-photo-3760871.jpeg",
+        "https://images.pexels.com/photos/3760856/pexels-photo-3760856.jpeg"
+      ]
+    },
+    "Round": {
+      label: "Round · rostro redondo",
+      explanation:
+        "Tu rostro es casi tan ancho como largo y las líneas son muy suaves y curvas. " +
+        "Esto indica un rostro Round: dulce, juvenil y muy armonioso.",
+      tips: [
+        "Coloca el contorno bajo los pómulos en diagonal para alargar visualmente el rostro.",
+        "Aplica el rubor un poco más alto y hacia afuera, evitando el centro de la mejilla.",
+        "Delineados ascendentes y cejas ligeramente anguladas ayudan a estilizar."
+      ],
+      videoId: "j5pLqH0P0nM", // placeholder
+      images: [
+        "https://images.pexels.com/photos/3762837/pexels-photo-3762837.jpeg",
+        "https://images.pexels.com/photos/3762875/pexels-photo-3762875.jpeg",
+        "https://images.pexels.com/photos/3760850/pexels-photo-3760850.jpeg"
+      ]
+    },
+    "Heart": {
+      label: "Heart · rostro corazón",
+      explanation:
+        "Tu frente se ve más ancha que la mandíbula y el mentón termina en una zona más estrecha. " +
+        "Por eso tu rostro se clasifica como Heart: expresivo, romántico y con protagonismo en ojos y mejillas.",
+      tips: [
+        "Suaviza la frente con un poco de contorno en las sienes y parte alta.",
+        "Lleva el rubor hacia el centro y parte alta de las mejillas para equilibrar con el mentón.",
+        "Labios ligeramente más marcados ayudan a balancear la parte inferior del rostro."
+      ],
+      videoId: "9zP3dE4H2sE", // placeholder
+      images: [
+        "https://images.pexels.com/photos/3760851/pexels-photo-3760851.jpeg",
+        "https://images.pexels.com/photos/3760858/pexels-photo-3760858.jpeg",
+        "https://images.pexels.com/photos/3760857/pexels-photo-3760857.jpeg"
+      ]
+    }
+  };
+
+  const fileInput = document.getElementById("file-input");
+  const facePreview = document.getElementById("face-preview");
+  const faceShapeSelect = document.getElementById("face-shape-select");
+  const analyzeBtn = document.getElementById("analyze-btn");
+
+  const shapeChip = document.getElementById("shape-chip");
+  const shapeName = document.getElementById("shape-name");
+  const shapeExplanation = document.getElementById("shape-explanation");
+  const tipsList = document.getElementById("tips-list");
+  const imagesRow = document.getElementById("images-row");
+  const ytFrame = document.getElementById("yt-frame");
+
+  // Vista previa de imagen subida
+  fileInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      facePreview.innerHTML = "";
+      const img = document.createElement("img");
+      img.src = ev.target.result;
+      facePreview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Botón "Analizar" (demo: solo usa el valor del select)
+  analyzeBtn.addEventListener("click", () => {
+    const shape = faceShapeSelect.value;
+    renderResults(shape);
+  });
+
+  function renderResults(shape) {
+    const data = FACE_DATA[shape];
+    if (!data) return;
+
+    shapeName.innerHTML = `<strong>${data.label}</strong>`;
+    shapeExplanation.innerHTML = data.explanation;
+
+    // Tips
+    tipsList.innerHTML = "";
+    data.tips.forEach(tip => {
+      const li = document.createElement("li");
+      li.textContent = tip;
+      tipsList.appendChild(li);
+    });
+
+    // Imágenes
+    imagesRow.innerHTML = "";
+    data.images.forEach(url => {
+      const img = document.createElement("img");
+      img.src = url;
+      img.alt = "Ejemplo de maquillaje " + shape;
+      imagesRow.appendChild(img);
+    });
+
+    // Video
+    ytFrame.src = `https://www.youtube.com/embed/${data.videoId}`;
+  }
+
+  // Inicializar con Square
+  renderResults("Square");
+</script>
+
+</body>
+</html>
