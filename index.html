@@ -4,207 +4,150 @@
   <meta charset="UTF-8" />
   <title>The Pink Club – Face Shape Analyzer</title>
 
-  <!-- Google Fonts -->
+  <!-- Fuente Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --pink: #ff8ccf;
-      --lightpink: #ffe3f4;
-      --dark: #333;
-      --white: #fff;
-    }
-
     body {
-      margin: 0;
       font-family: "Poppins", sans-serif;
-      background-color: var(--lightpink);
+      margin: 0;
+      background: #ffe6f2;
+      text-align: center;
     }
 
-    .header {
-      background-color: var(--pink);
-      padding: 30px;
-      text-align: center;
-      font-size: 32px;
+    header {
+      background: #ff8ac9;
+      padding: 25px;
+      color: white;
+      font-size: 28px;
       font-weight: 600;
-      color: var(--white);
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px #ffb3da;
     }
 
-    .subheader {
-      text-align: center;
-      margin-top: -15px;
-      color: var(--white);
-      font-size: 20px;
-      opacity: 0.9;
+    #logo {
+      width: 160px;
+      margin-top: 15px;
     }
 
-    .container {
-      max-width: 850px;
-      margin: 60px auto;
-      background: var(--white);
+    .card {
+      background: white;
+      width: 70%;
+      margin: 40px auto;
       padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-      text-align: center;
+      border-radius: 22px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.1);
     }
 
-    button {
-      margin-top: 25px;
-      padding: 16px 32px;
-      font-size: 20px;
-      border-radius: 40px;
+    .btn {
+      background: #ff4fa3;
+      color: white;
+      padding: 14px 35px;
+      border-radius: 12px;
       border: none;
-      background: var(--pink);
-      color: var(--white);
       cursor: pointer;
+      font-size: 18px;
+      margin-top: 20px;
       transition: 0.2s;
     }
 
-    button:hover {
-      transform: scale(1.05);
-      background: #ff78c6;
+    .btn:hover {
+      background: #ff1f85;
     }
 
-    #loading {
-      display: none;
-      font-size: 20px;
-      margin-top: 20px;
-      color: var(--dark);
-    }
-
-    #results {
+    .result {
       margin-top: 40px;
-      display: none;
-      text-align: left;
-    }
-
-    .result-box {
-      background: var(--lightpink);
-      padding: 25px;
-      border-radius: 15px;
-    }
-
-    .result-title {
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 600;
-      color: var(--dark);
+      color: #ff2d96;
     }
 
-    .result-text {
-      margin-top: 15px;
-      font-size: 18px;
-      line-height: 1.5;
+    .examples img {
+      width: 220px;
+      border-radius: 12px;
+      margin: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     }
 
-    .tips-title {
-      font-size: 22px;
-      font-weight: 600;
+    iframe {
       margin-top: 25px;
-      color: var(--dark);
-    }
-
-    .tips-text {
-      font-size: 18px;
-      margin-top: 10px;
+      border-radius: 12px;
     }
   </style>
 </head>
 
 <body>
-  <div class="header">💖 The Pink Club – Face Shape Analyzer 💖</div>
-  <div class="subheader">Tu asistente de belleza personalizado</div>
 
-  <div class="container">
-    <h2>Sube tu foto para analizar tu forma de rostro</h2>
-
-    <input type="file" id="fileInput" accept="image/*">
-
-    <br>
-    <button id="analyzeBtn">Analizar rostro</button>
-
-    <div id="loading">Analizando tu foto... ✨</div>
-
-    <div id="results">
-      <div class="result-box">
-        <div id="shape-title" class="result-title"></div>
-
-        <div class="result-text" id="reason-text"></div>
-
-        <div class="tips-title">✨ Tips de maquillaje para tu forma de rostro</div>
-        <div class="tips-text" id="tips-text"></div>
-      </div>
-    </div>
+<header>
+  💖 The Pink Club – Face Shape Analyzer 💖
+  <div>
+    <img id="logo" src="media/TPC cover.png">
   </div>
+</header>
 
-  <script>
-    const fileInput = document.getElementById("fileInput");
-    const analyzeBtn = document.getElementById("analyzeBtn");
-    const loading = document.getElementById("loading");
-    const results = document.getElementById("results");
-    const shapeTitle = document.getElementById("shape-title");
-    const reasonText = document.getElementById("reason-text");
-    const tipsText = document.getElementById("tips-text");
+<div class="card">
+  <h2>Sube tu foto para analizar tu forma de rostro</h2>
 
-    // 🔮 DEMO: escoger forma de rostro aleatoria
-    function fakePredictFaceShape() {
-      const shapes = ["Square", "Oval", "Round", "Heart"];
-      const idx = Math.floor(Math.random() * shapes.length);
-      return shapes[idx];
+  <input type="file" id="fileInput">
+
+  <button class="btn" onclick="fakeAnalyze()">Analizar rostro</button>
+
+  <div id="result" class="result"></div>
+  <div id="examples" class="examples"></div>
+  <div id="video"></div>
+</div>
+
+<script>
+  function fakeAnalyze() {
+    const shapes = ["Square", "Oval", "Round", "Heart"];
+    const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+
+    document.getElementById("result").innerHTML =
+      "✨ Tu forma de rostro es: <b>" + randomShape + "</b>";
+
+    // Mostrar ejemplos según el tipo
+    let htmlImages = "";
+    let video = "";
+
+    if (randomShape === "Square") {
+      htmlImages = `
+        <img src="media/Cuadrado1.jpeg">
+        <img src="media/Cuadrado2.jpeg">
+        <img src="media/Cuadrado3.jpeg">
+      `;
+      video = `<iframe width="560" height="315" src="https://www.youtube.com/watch?v=RF1oMaJOna8" allowfullscreen></iframe>`;
     }
 
-    function fillReasonAndTips(predictedShape) {
-      let reason = "";
-      let tips = "";
-
-      if (predictedShape === "Square") {
-        reason =
-          "Tu frente, pómulos y mandíbula tienen proporciones similares, creando líneas rectas y ángulos definidos.";
-        tips =
-          "Suaviza los laterales con contorno y coloca rubor en diagonal para equilibrar los ángulos.";
-      } else if (predictedShape === "Oval") {
-        reason =
-          "Tu rostro es más largo que ancho y la mandíbula es suave, creando una forma armónica.";
-        tips =
-          "Casi todos los estilos te favorecen. Enfatiza pómulos y mantén el contorno suave siguiendo tu estructura natural.";
-      } else if (predictedShape === "Round") {
-        reason =
-          "El largo y el ancho del rostro son similares y la mandíbula se percibe más redondeada.";
-        tips =
-          "Aplica contorno en los laterales de frente y mandíbula, y coloca rubor en diagonal para estilizar el rostro.";
-      } else if (predictedShape === "Heart") {
-        reason =
-          "La frente suele ser más amplia que la mandíbula y el mentón luce más afinado.";
-        tips =
-          "Equilibra la parte superior con bronzer suave en los laterales de la frente y coloca el rubor centrado hacia afuera.";
-      }
-
-      reasonText.textContent = reason;
-      tipsText.textContent = tips;
+    if (randomShape === "Oval") {
+      htmlImages = `
+        <img src="media/Ovalado1.jpeg">
+        <img src="media/Ovalado2.jpeg">
+        <img src="media/Ovalado3.jpeg">
+      `;
+      video = `<iframe width="560" height="315" src="https://www.youtube.com/watch?v=zgP7Qnoki_Q" allowfullscreen></iframe>`;
     }
 
-    analyzeBtn.addEventListener("click", () => {
-      const file = fileInput.files[0];
-      if (!file) {
-        alert("Por favor sube una foto antes ✨");
-        return;
-      }
+    if (randomShape === "Round") {
+      htmlImages = `
+        <img src="media/Redondo1.jpeg">
+        <img src="media/Redondo2.jpeg">
+        <img src="media/Redondo3.jpeg">
+      `;
+      video = `<iframe width="560" height="315" src="https://www.youtube.com/shorts/HU4c62oa5Qo" allowfullscreen></iframe>`;
+    }
 
-      // Mostrar loading
-      loading.style.display = "block";
-      results.style.display = "none";
+    if (randomShape === "Heart") {
+      htmlImages = `
+        <img src="media/Corazon1.jpeg">
+        <img src="media/Corazon2.jpeg">
+        <img src="media/Corazon3.jpeg">
+      `;
+      video = `<iframe width="560" height="315" src="https://www.youtube.com/watch?v=k_b2gi1jp78" allowfullscreen></iframe>`;
+    }
 
-      // Simular “procesamiento”
-      setTimeout(() => {
-        const predictedShape = fakePredictFaceShape();
+    document.getElementById("examples").innerHTML = htmlImages;
+    document.getElementById("video").innerHTML = video;
+  }
+</script>
 
-        shapeTitle.textContent = "Forma de rostro predicha: " + predictedShape;
-        fillReasonAndTips(predictedShape);
-
-        loading.style.display = "none";
-        results.style.display = "block";
-      }, 1000);
-    });
-  </script>
 </body>
 </html>
